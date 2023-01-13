@@ -1,0 +1,6 @@
+pandas
+tensorflow
+matplotlib
+scikit-learn
+Flask
+autopep8
