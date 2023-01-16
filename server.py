@@ -1,22 +1,30 @@
 from flask import Flask, request
-import tensorflow as tf
 import numpy as np
+import pickle
+
+model = pickle.load(open('model-tensor.pickle', 'rb'))
+local_scaler = pickle.load(open('scaler-tensor.pickle', 'rb'))
+
 
 app = Flask(__name__)
 
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def homepage():
-    return "Homepages"
+    return 'Homepage'
 
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    model = tf.keras.models.load_model('model')
-    data = request.form.get('data')
-    prediction = model.predict(data)
-    score = tf.nn.softmax(prediction[0])
-    return score
+    request_data = request.get_json(force=True)
+    rssi = request_data['rssi']
+    A1 = request_data['A1']
+    P1 = request_data['P1']
+
+    prediction = model.predict(
+        local_scaler.transform(np.array([[rssi, A1, P1]])))
+
+    return 'The prediction is {}'.format(prediction)
 
 
 if __name__ == '__main__':
