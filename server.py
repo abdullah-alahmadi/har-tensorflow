@@ -1,12 +1,14 @@
 from flask import Flask, request
 import numpy as np
 import pickle
+from flask_cors import CORS
 
-model = pickle.load(open('model-tensor.pickle', 'rb'))
-local_scaler = pickle.load(open('scaler-tensor.pickle', 'rb'))
+model = pickle.load(open('classifier.pickle', 'rb'))
+local_scaler = pickle.load(open('scaler.pickle', 'rb'))
 
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route('/', methods=['GET'])
